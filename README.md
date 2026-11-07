@@ -14,7 +14,7 @@ The model notebooks and the web app will be added next.
 
 ```
 ├── datasets/
-│   ├── raw/                     # original OPSD files (downloaded by notebook 01) + small GB extract
+│   ├── raw/                     # gb_columns_raw.csv: the 3 original GB columns used (full OPSD files: notebook 01)
 │   └── processed/               # clean data, features, train / validation / test files
 ├── notebooks/
 │   ├── 01_download_dataset.ipynb      # download the raw files
@@ -86,14 +86,17 @@ You will see `(.venv)` at the start of the line when the environment is active. 
    ```
 
 2. Jupyter opens in your browser. Click the **`notebooks`** folder.
-3. Open each notebook file **in this order** and run it:
+3. Open each notebook file **in this order** and run it.
+
+**Start from notebook 02.** The raw data it needs, `datasets/raw/gb_columns_raw.csv`, is already in the repository.
+Notebook 01 is optional: it downloads the full original files from OPSD (about 365 MB) and makes `gb_columns_raw.csv` again.
 
 | Order | Notebook file | What it does |
 |---|---|---|
-| 1 | `01_download_dataset.ipynb` | Downloads the two OPSD files (about 365 MB) into `datasets/raw/`. Skipped if the files are already there |
-| 2 | `02_preprocessing.ipynb` | Keeps GB load and temperature for 2015-2019, finds wrong values with three rules and fills them |
-| 3 | `03_eda.ipynb` | Exploratory data analysis: daily, weekly and yearly patterns, holidays, temperature, autocorrelation |
-| 4 | `04_feature_engineering.ipynb` | Builds the 11 features and splits the data: train 2015-2017, validation 2018, test 2019 |
+| (optional) | `01_download_dataset.ipynb` | Downloads the two full OPSD files into `datasets/raw/` and saves the three GB columns in `gb_columns_raw.csv` |
+| 1 | `02_preprocessing.ipynb` | Keeps GB load and temperature for 2015-2019, finds wrong values with three rules and fills them |
+| 2 | `03_eda.ipynb` | Exploratory data analysis: daily, weekly and yearly patterns, holidays, temperature, autocorrelation |
+| 3 | `04_feature_engineering.ipynb` | Builds the 11 features and splits the data: train 2015-2017, validation 2018, test 2019 |
 
 **How to run one notebook:**
 
@@ -103,7 +106,6 @@ You will see `(.venv)` at the start of the line when the environment is active. 
 4. Close the notebook and open the next one.
 
 Each notebook saves its output, which the next notebook reads, so always keep this order.
-The full raw files are not stored on GitHub because they are bigger than 100 MB, so **always run notebook 01 first**.
 
 ---
 
@@ -113,8 +115,8 @@ The full raw files are not stored on GitHub because they are bigger than 100 MB,
 |---|---|
 | `py` or `python` is not recognised (Windows) | Python is not on PATH. Reinstall Python 3.11 and tick "Add python.exe to PATH" |
 | `jupyter` is not recognised | The environment is not active. Run the activate command from step 2 |
-| `FileNotFoundError` in notebook 02 | Run notebook 01 first, it downloads the raw files |
-| `FileNotFoundError` in notebook 03 or 04 | Run the notebooks in order. Each one needs the files from the one before |
+| `FileNotFoundError` in notebook 02 | Check that `datasets/raw/gb_columns_raw.csv` is there. If not, run notebook 01 to make it |
+| `FileNotFoundError` in notebook 03 or 04 | Run the notebooks in order (02, 03, 04). Each one needs the files from the one before |
 
 ---
 
