@@ -3,8 +3,6 @@
 Hourly electricity demand forecasting for Great Britain, 1 to 24 hours ahead, comparing five models:
 **seasonal naive, SARIMA, XGBoost, LSTM and PatchTST**. Data: Open Power System Data, 2015-2019.
 
-Illyas Matloob (B01050018) · MSc Computer Science, Ulster University · Supervisor: Dr Anwar Haq
-
 **Current stage:** data preparation, exploratory data analysis, feature engineering and the baseline models (notebooks 01-05).
 The other model notebooks and the web app will be added next.
 

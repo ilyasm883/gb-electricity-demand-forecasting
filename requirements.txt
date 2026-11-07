@@ -1,5 +1,5 @@
 # Multi-Horizon Electricity Demand Forecasting (COM748)
-# Tested with Python 3.11 on macOS (Apple M2 Pro). Works on Windows and Linux too.
+# Requires Python 3.11.
 # Install:  pip install -r requirements.txt
 
 # data

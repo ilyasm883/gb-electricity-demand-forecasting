@@ -1,7 +1,6 @@
 # Dataset, Features and Pipeline
 
 **Project:** Multi-Horizon Electricity Demand Forecasting Using Classical Models and Deep Temporal Networks
-**Student:** Illyas Matloob (B01050018), COM748
 
 The full working is in the notebooks: `01_download_dataset`, `02_preprocessing`, `03_eda` and `04_feature_engineering`. All the figures quoted below come from them.
 
