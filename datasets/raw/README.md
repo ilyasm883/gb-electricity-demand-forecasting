@@ -1,23 +1,23 @@
 # Raw data
 
-**`gb_columns_raw.csv`** is the raw data used by the project. It has the three original columns from Open Power System Data,
-with the values unchanged. **Notebook 02 starts from this file.**
+**`gb_columns_raw.csv`** is the data this project starts from. **Notebook 02 reads this file.**
+It has the 3 original columns we need from Open Power System Data. The values are not changed.
 
-| Column | File it comes from |
+| Column | Where it comes from |
 |---|---|
-| `utc_timestamp` | both files |
-| `GB_GBN_load_actual_entsoe_transparency` | time series file (Great Britain load, MW) |
-| `GB_temperature` | weather file (temperature, °C) |
+| `utc_timestamp` | the date and hour (UTC) |
+| `GB_GBN_load_actual_entsoe_transparency` | how much electricity Great Britain used (MW), from the time series file |
+| `GB_temperature` | the temperature in Great Britain (°C), from the weather file |
 
-It covers 31 Dec 2014 to 30 Sep 2020 (the time series file). Temperature is empty after 2019 because the weather file ends there.
+It goes from 31 December 2014 to 30 September 2020. The temperature is empty after 2019, because the weather file ends there.
 
-## Full original files (optional)
+## The full original files (optional)
 
-Notebook `01_download_dataset.ipynb` downloads the two full files into this folder and makes `gb_columns_raw.csv` from them:
+Notebook `01_download_dataset.ipynb` downloads the two full files into this folder, and makes `gb_columns_raw.csv` from them:
 
 | File | Size | Source |
 |---|---|---|
 | `time_series_60min_singleindex.csv` | 130 MB | OPSD Time Series, version 2020-10-06 |
 | `weather_data.csv` | 234 MB | OPSD Weather Data, version 2020-09-16 |
 
-They are bigger than GitHub's 100 MB limit, so they are not stored in the repository.
+These files are too big for GitHub (the limit is 100 MB), so they are not in the project. You only need them if you want to check where the data comes from.

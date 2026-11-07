@@ -1,51 +1,52 @@
 # Multi-Horizon Electricity Demand Forecasting (COM748)
 
-Hourly electricity demand forecasting for Great Britain, 1 to 24 hours ahead, comparing five models:
-**seasonal naive, SARIMA, XGBoost, LSTM and PatchTST**. Data: Open Power System Data, 2015-2019.
+This project predicts how much electricity Great Britain will use in the next 1 to 24 hours.
+It compares five models: **seasonal naive, SARIMA, XGBoost, LSTM and PatchTST**.
+The data comes from Open Power System Data, for the years 2015 to 2019.
 
-See [ABOUT.md](ABOUT.md) for the dataset, research questions, research gap, models and methodology.
+- [ABOUT.md](ABOUT.md): the data, the research questions, the research gap, why we chose the models, and how we did it.
+- [RESEARCH_QA.md](RESEARCH_QA.md): questions and answers about the research, including all results.
 
-**Main result:** XGBoost is the most accurate model on the 2019 test year (MAE 1,080 MW, MAPE 3.3%, 45% better than the seasonal naive model).
-See [RESEARCH_QA.md](RESEARCH_QA.md) for the research questions, method and all results.
+**Main result:** XGBoost makes the best forecasts for 2019. On average it is 1,080 MW (3.3%) away from the real value. This is 45% better than the simplest model.
 
 ---
 
-## Folder structure
+## Folders and files
 
 ```
 implementation/
 ├── datasets/
-│   ├── raw/                     # gb_columns_raw.csv: the 3 original GB columns used (full OPSD files: notebook 01)
-│   └── processed/               # clean data, features, train / validation / test files
+│   ├── raw/                     # gb_columns_raw.csv: the 3 original columns we use
+│   └── processed/               # clean data, features, and the train / validation / test files
 ├── notebooks/
-│   ├── 01_download_dataset.ipynb      # download the raw files
-│   ├── 02_preprocessing.ipynb         # select GB columns, find and fill wrong values
-│   ├── 03_eda.ipynb                   # exploratory data analysis
-│   ├── 04_feature_engineering.ipynb   # build 11 features, split train / validation / test
-│   ├── 05_baselines.ipynb             # seasonal naive + SARIMA
-│   ├── 06_xgboost.ipynb               # XGBoost (tuned on 2018), saves the model
-│   ├── 07_deep_models.ipynb           # LSTM + PatchTST
-│   ├── 08_evaluation.ipynb            # RQ1, RQ2: compare all models on 2019
-│   └── 09_error_analysis.ipynb        # RQ3, RQ4: peaks, weekends, holidays, ablation
+│   ├── 01_download_dataset.ipynb      # download the original data (optional)
+│   ├── 02_preprocessing.ipynb         # find and fix wrong values
+│   ├── 03_eda.ipynb                   # look at the data and its patterns
+│   ├── 04_feature_engineering.ipynb   # make 11 features and split the data by year
+│   ├── 05_baselines.ipynb             # seasonal naive and SARIMA models
+│   ├── 06_xgboost.ipynb               # XGBoost model, and save it for the web app
+│   ├── 07_deep_models.ipynb           # LSTM and PatchTST models
+│   ├── 08_evaluation.ipynb            # compare all models (RQ1, RQ2)
+│   └── 09_error_analysis.ipynb        # where the models go wrong, and which features help (RQ3, RQ4)
 ├── results/
-│   ├── forecasts/               # 2019 forecasts of every model
+│   ├── forecasts/               # the 2019 forecasts of every model
 │   ├── tables/                  # result tables (CSV)
-│   ├── figures/                 # result figures (PNG)
-│   └── models/                  # saved XGBoost model used by the dashboard
-├── app/                         # Streamlit web app
-│   ├── app.py                   # main file: page settings and sidebar menu
-│   ├── data_loader.py           # reads the data, the saved model and the results
-│   ├── predictor.py             # live 24-hour forecast with XGBoost
-│   ├── tables.py                # tables with the best values in bold
+│   ├── figures/                 # charts (PNG)
+│   └── models/                  # the saved XGBoost model used by the web app
+├── app/                         # the web app (made with Streamlit)
+│   ├── app.py                   # main file: page settings and the menu
+│   ├── data_loader.py           # reads the data, the model and the results
+│   ├── predictor.py             # makes a new 24-hour forecast with XGBoost
+│   ├── tables.py                # makes tables with the best values in bold
 │   ├── page_prediction.py       # page 1: Prediction
 │   ├── page_compare.py          # page 2: Compare models
-│   ├── page_results.py          # page 3: Results (RQ1-RQ4 tables and charts)
-│   ├── page_about.py            # page 4: About the research
+│   ├── page_results.py          # page 3: Results
+│   ├── page_about.py            # page 4: About
 │   └── requirements.txt         # packages for the web app only
-├── ABOUT.md                     # dataset, research questions, research gap, models, methodology
+├── ABOUT.md                     # about the research
 ├── RESEARCH_QA.md               # questions and answers about the research
-├── FEATURES.md                  # dataset, features and pipeline
-├── requirements.txt             # packages for the whole project (exact versions)
+├── FEATURES.md                  # the data and the features in detail
+├── requirements.txt             # packages for the whole project
 └── README.md
 ```
 
@@ -53,21 +54,20 @@ implementation/
 
 ## 1. What you need
 
-- **Python 3.11** (tested with 3.11.11). Download it from <https://www.python.org/downloads/>.
-  On Windows, tick **"Add python.exe to PATH"** during the installation.
-- About **3 GB** of free disk space (PyTorch is large) and an internet connection.
-- No GPU is needed. A GPU only makes the LSTM and PatchTST notebooks faster.
+- **Python 3.11.** Download it from <https://www.python.org/downloads/>.
+  On Windows, tick **"Add python.exe to PATH"** when you install it.
+- About **3 GB** of free space on your computer, and internet.
+- You do **not** need a GPU (graphics card). A GPU only makes notebooks 07 and 09 faster.
 
-Open a terminal **inside the `implementation` folder**:
-- **Windows:** open the folder in File Explorer, click the address bar, type `powershell` and press Enter.
-- **Mac / Linux:** open Terminal and use `cd` to go to the folder.
+Open a terminal **in the `implementation` folder**:
+- **Windows:** open the folder in File Explorer, click the address bar at the top, type `powershell` and press Enter.
+- **Mac / Linux:** open Terminal and go to the folder with `cd`.
 
-> The folder path contains spaces, so always put it in quotes when you type it, for example
-> `cd "C:\Users\me\Desktop\finalthesis sep 2026\Ilyas\implementation"`.
+> If the folder path has spaces, put it in quotes, for example `cd "C:\Users\me\Desktop\my project"`.
 
 ---
 
-## 2. Set up the experiments (notebooks)
+## 2. Install the packages
 
 ### Windows (PowerShell)
 
@@ -78,13 +78,13 @@ python -m pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-If PowerShell says *"running scripts is disabled on this system"*, run this once and try the activate command again:
+If PowerShell says *"running scripts is disabled on this system"*, run this line once, then run the second line again:
 
 ```powershell
 Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
 ```
 
-(Using the old Command Prompt instead? Activate with `.venv\Scripts\activate.bat`.)
+(If you use Command Prompt instead of PowerShell, the second line is `.venv\Scripts\activate.bat`.)
 
 ### Mac / Linux
 
@@ -95,82 +95,83 @@ python -m pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-You will see `(.venv)` at the start of the line when the environment is active. Activate it again every time you open a new terminal.
+The first line makes a separate space for this project's packages (called `.venv`). The second line turns it on.
+When it is on, the line in the terminal starts with `(.venv)`. Turn it on again every time you open a new terminal.
 
-### Optional: NVIDIA GPU on Windows
+### Optional: NVIDIA graphics card on Windows
 
-`pip install -r requirements.txt` installs the CPU version of PyTorch on Windows. If you have an NVIDIA GPU, install the CUDA version
-of PyTorch 2.14.1 with the command from <https://pytorch.org/get-started/locally/>. NeuralForecast uses the GPU automatically.
+On Windows, the steps above install the normal (CPU) version of PyTorch. If you have an NVIDIA graphics card, you can install the
+faster GPU version of PyTorch 2.14.1 with the command from <https://pytorch.org/get-started/locally/>. The notebooks then use it automatically.
 
 ---
 
-## 3. Run the experiments
+## 3. Run the notebooks
 
-1. Start Jupyter (with the environment active):
+1. Start Jupyter (the `.venv` must be on):
 
    ```bash
    jupyter notebook
    ```
 
-2. Jupyter opens in your browser. Click the **`notebooks`** folder.
-3. Open each notebook file **in this order** and run it.
+2. Jupyter opens in your web browser. Click the **`notebooks`** folder.
+3. Open the notebooks **in this order** and run each one.
 
-**Start from notebook 02.** The raw data it needs, `datasets/raw/gb_columns_raw.csv`, is already in the repository.
-Notebook 01 is optional: it downloads the full original files from OPSD (about 365 MB) and makes `gb_columns_raw.csv` again.
+**Start with notebook 02.** The data it needs (`datasets/raw/gb_columns_raw.csv`) is already in the project.
+Notebook 01 is only needed if you want to download the original data again (about 365 MB).
 
-| Order | Notebook file | What it does |
+| Order | Notebook | What it does |
 |---|---|---|
-| (optional) | `01_download_dataset.ipynb` | Downloads the two full OPSD files and saves the three GB columns in `gb_columns_raw.csv` |
-| 1 | `02_preprocessing.ipynb` | Keeps GB load and temperature for 2015-2019, finds wrong values and fills them |
-| 2 | `03_eda.ipynb` | Exploratory data analysis |
-| 3 | `04_feature_engineering.ipynb` | Builds the 11 features and splits train / validation / test |
-| 4 | `05_baselines.ipynb` | Seasonal naive and SARIMA |
-| 5 | `06_xgboost.ipynb` | XGBoost, tuned on 2018, and saves the model for the web app |
-| 6 | `07_deep_models.ipynb` | LSTM and PatchTST (faster with a GPU) |
-| 7 | `08_evaluation.ipynb` | RQ1 and RQ2: compares all models on 2019 |
-| 8 | `09_error_analysis.ipynb` | RQ3 and RQ4: peaks, weekends, holidays and feature ablation |
+| (optional) | `01_download_dataset.ipynb` | Downloads the two original data files and saves the 3 columns we use |
+| 1 | `02_preprocessing.ipynb` | Keeps the data for 2015-2019, and finds and fixes wrong values |
+| 2 | `03_eda.ipynb` | Looks at the data: patterns by hour, day, season, holiday and temperature |
+| 3 | `04_feature_engineering.ipynb` | Makes the 11 features and splits the data into train, validation and test |
+| 4 | `05_baselines.ipynb` | Seasonal naive and SARIMA models |
+| 5 | `06_xgboost.ipynb` | XGBoost model. Saves the model for the web app |
+| 6 | `07_deep_models.ipynb` | LSTM and PatchTST models (faster with a GPU) |
+| 7 | `08_evaluation.ipynb` | Compares all models on 2019 (RQ1 and RQ2) |
+| 8 | `09_error_analysis.ipynb` | Finds where the models make mistakes and which features help (RQ3 and RQ4) |
 
-**How to run one notebook:**
+**How to run a notebook:**
 
-1. Click the notebook file to open it.
+1. Click the notebook to open it.
 2. In the menu, click **Kernel → Restart Kernel and Run All Cells** (or **Run → Run All Cells**).
-3. Wait until every cell has finished. A cell that is still running shows `[*]`; when it is done it shows a number, such as `[5]`.
+3. Wait until all cells are finished. A cell that is still running shows `[*]`. A finished cell shows a number, like `[5]`.
 4. Close the notebook and open the next one.
 
-Each notebook saves its output, which the next notebook reads, so always keep this order.
+Each notebook saves files that the next notebook needs, so always keep this order.
 All results are already saved in `results/`, so you can also skip the notebooks and go straight to the web app.
 
 ---
 
-## 4. Run the web app (dashboard)
+## 4. Run the web app
 
-From the `implementation` folder, with the environment active:
+In the `implementation` folder, with the `.venv` on:
 
 ```bash
 streamlit run app/app.py
 ```
 
-On Windows you can also write `streamlit run app\app.py`. The app opens at <http://localhost:8501>. Stop it with **Ctrl + C**.
+On Windows you can also type `streamlit run app\app.py`. The app opens in your browser at <http://localhost:8501>.
+To stop it, press **Ctrl + C** in the terminal.
 
-> Only want the web app? It needs far fewer packages. Make an environment as in step 2, but install
-> `pip install -r app/requirements.txt` instead (no PyTorch needed).
+> Only want the web app? Install fewer packages: follow step 2, but use `pip install -r app/requirements.txt`.
 
-The app has four pages (menu on the left):
+The app has four pages. Use the menu on the left:
 
 | Page | What you can do |
 |---|---|
-| **Prediction** | Pick a day in 2019. The saved XGBoost model forecasts the 24 hours of that day live, next to the real demand. Change the temperature or mark the day as a bank holiday to see how the forecast reacts |
-| **Compare models** | Pick a day and see the saved forecasts of all five models, with each model's error on that day |
-| **Results** | Tables and charts for all four research questions (RQ1-RQ4), with the best results in bold |
-| **About** | The research explained: problem, research gap, data, features, models, results, limitations and future work |
+| **Prediction** | Choose a day in 2019. XGBoost makes a forecast for the 24 hours of that day, next to the real values. You can change the temperature or make the day a bank holiday, and see how the forecast changes |
+| **Compare models** | Choose a day and see the forecasts of all five models, and the error of each model on that day |
+| **Results** | Tables and charts for the four research questions. The best results are in bold |
+| **About** | Questions and answers about the research |
 
 ### Put the web app online (free)
 
-1. Upload the `implementation` folder to a GitHub repository (the `.gitignore` leaves out the large raw data).
+1. Upload the `implementation` folder to GitHub. (The large original data files are left out on purpose.)
 2. Go to <https://share.streamlit.io>, sign in with GitHub and click **Create app**.
-3. Choose the repository, set the main file to `app/app.py` and Python version **3.11**, then click **Deploy**.
+3. Choose the repository. Set the main file to `app/app.py` and Python to **3.11**. Click **Deploy**.
 
-Streamlit Cloud installs `app/requirements.txt` automatically.
+Streamlit installs the packages in `app/requirements.txt` by itself.
 
 ---
 
@@ -178,45 +179,45 @@ Streamlit Cloud installs `app/requirements.txt` automatically.
 
 | Problem | Fix |
 |---|---|
-| `py` or `python` is not recognised (Windows) | Python is not on PATH. Reinstall Python 3.11 and tick "Add python.exe to PATH" |
-| `streamlit` or `jupyter` is not recognised | The environment is not active. Run the activate command from step 2 |
-| `FileNotFoundError` in the web app | Start it from the `implementation` folder, not from inside `app` |
-| `FileNotFoundError` in a notebook | Run the notebooks in order, starting from 02. Each one needs the files from the one before |
-| A notebook with XGBoost and PyTorch freezes | Already handled in notebook 09 (`OMP_NUM_THREADS=1`). Restart the kernel and run again |
-| Deep model results differ slightly from the saved ones | Normal. GPU training is not exactly the same every time. Seeds are fixed (XGBoost 42, LSTM and PatchTST 1) |
+| `py` or `python` is not found (Windows) | Python is not on PATH. Install Python 3.11 again and tick "Add python.exe to PATH" |
+| `streamlit` or `jupyter` is not found | The `.venv` is not on. Run the second line of step 2 again |
+| `FileNotFoundError` in the web app | Start the app from the `implementation` folder, not from inside the `app` folder |
+| `FileNotFoundError` in a notebook | Run the notebooks in order, starting with 02. Each one needs files from the one before |
+| A notebook with XGBoost and PyTorch stops and does not finish | This is already fixed in notebook 09 (`OMP_NUM_THREADS=1`). Restart the kernel and run it again |
+| Deep learning results are a little different from the saved ones | This is normal. Training on a GPU is not exactly the same every time. The random seeds are fixed (XGBoost 42, LSTM and PatchTST 1) |
 
 ---
 
-## 6. Run the application on a Windows computer (step by step)
+## 6. Run the web app on a Windows computer (step by step)
 
-These steps start from a Windows computer with nothing installed and end with the web app open in the browser.
-They only install what the web app needs. All results are already saved in the project.
+These steps start with a Windows computer that has nothing installed. At the end, the web app is open in your browser.
+You only install what the web app needs. All results are already in the project.
 
 **Step 1. Install Python 3.11**
 
 1. Go to <https://www.python.org/downloads/windows/> and download the **Windows installer (64-bit)** for **Python 3.11**.
-2. Run it. On the first screen, tick **"Add python.exe to PATH"**, then click **Install Now**.
-3. Check it worked: open **PowerShell** (Start menu → type `powershell` → Enter) and type:
+2. Open it. On the first screen, tick **"Add python.exe to PATH"**, then click **Install Now**.
+3. Check that it works: open **PowerShell** (Start menu → type `powershell` → Enter) and type:
 
    ```powershell
    py -3.11 --version
    ```
 
-   It should show `Python 3.11.x`.
+   You should see `Python 3.11.x`.
 
 **Step 2. Get the project**
 
-- From GitHub: click the green **Code** button → **Download ZIP**, then right-click the ZIP → **Extract All**.
+- From GitHub: click the green **Code** button → **Download ZIP**. Then right-click the ZIP file → **Extract All**.
 - Or copy the `implementation` folder from a USB stick or OneDrive.
 
 **Step 3. Open PowerShell in the project folder**
 
-Open the `implementation` folder in File Explorer (the one that contains `app`, `results` and `README.md`).
+Open the `implementation` folder in File Explorer (the folder with `app`, `results` and `README.md` in it).
 Click the address bar at the top, type `powershell` and press **Enter**. A blue window opens in that folder.
 
-**Step 4. Create the environment and install the packages (only the first time)**
+**Step 4. Install the packages (only the first time)**
 
-Copy these lines into PowerShell one by one and press **Enter** after each:
+Copy these lines into PowerShell, one at a time, and press **Enter** after each one:
 
 ```powershell
 py -3.11 -m venv .venv
@@ -225,40 +226,40 @@ python -m pip install --upgrade pip
 pip install -r app\requirements.txt
 ```
 
-- If you see *"running scripts is disabled on this system"* after the second line, run
-  `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned`, type `Y`, and run `.venv\Scripts\Activate.ps1` again.
-- When the environment is active, the line starts with `(.venv)`.
+- If you see *"running scripts is disabled on this system"* after the second line, type
+  `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned`, then `Y`, and run `.venv\Scripts\Activate.ps1` again.
+- When it works, the line starts with `(.venv)`.
 
-**Step 5. Start the application**
+**Step 5. Start the web app**
 
 ```powershell
 streamlit run app\app.py
 ```
 
 - The first time, Streamlit may ask for an email address. Just press **Enter** to skip.
-- If Windows Firewall asks for permission, click **Allow**.
-- The app opens in your browser at <http://localhost:8501>. If it does not open, copy that address into the browser.
+- If Windows Firewall asks, click **Allow**.
+- The app opens in your browser at <http://localhost:8501>. If it does not open, copy this address into your browser.
 
-**Step 6. Use the application**
+**Step 6. Use the web app**
 
-Use the menu on the left to switch between **Prediction**, **Compare models**, **Results** and **About** (see the table in section 4).
+Use the menu on the left to open **Prediction**, **Compare models**, **Results** or **About** (see section 4).
 
-**Step 7. Stop the application**
+**Step 7. Stop the web app**
 
-Go back to the PowerShell window and press **Ctrl + C**. You can then close the window.
+Go back to the PowerShell window and press **Ctrl + C**. Then you can close the window.
 
-**Next time you want to run it**
+**Next time**
 
-Open PowerShell in the `implementation` folder again (step 3), then run only:
+Open PowerShell in the `implementation` folder again (step 3) and type only:
 
 ```powershell
 .venv\Scripts\Activate.ps1
 streamlit run app\app.py
 ```
 
-> Want to run the notebooks (experiments) on Windows as well? In step 4, use `pip install -r requirements.txt`
-> instead of `app\requirements.txt` (this also installs PyTorch), then follow sections 3 and 4.
+> Do you also want to run the notebooks on Windows? In step 4, type `pip install -r requirements.txt`
+> instead of `app\requirements.txt` (this also installs PyTorch). Then follow sections 3 and 4.
 
 ---
 
-*Academic prototype for an MSc research project. Not a tool for real grid operation.*
+*A student research project. Not for real use by electricity companies.*

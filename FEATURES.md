@@ -1,122 +1,121 @@
-# Dataset, Features and Pipeline
+# Data, Features and Steps
 
 **Project:** Multi-Horizon Electricity Demand Forecasting Using Classical Models and Deep Temporal Networks
 
-The full working is in the notebooks: `01_download_dataset`, `02_preprocessing`, `03_eda` and `04_feature_engineering`. All the figures quoted below come from them.
+This file explains the data and the features in detail. All numbers come from notebooks 01 to 04.
 
 ---
 
-## 1. Data sources
+## 1. Where the data comes from
 
-| Dataset | File | Size | Content |
+| Dataset | File | Size | What is in it |
 |---|---|---|---|
-| OPSD Time Series v2020-10-06 [16] | `time_series_60min_singleindex.csv` | 130 MB, 300 columns | Hourly load, generation and prices for 32 European countries (ENTSO-E Transparency Platform) |
-| OPSD Weather Data v2020-09-16 [17] | `weather_data.csv` | 234 MB, 85 columns | Hourly country-average temperature and solar radiation, 1980–2019 (NASA MERRA-2) |
+| OPSD Time Series, version 2020-10-06 | `time_series_60min_singleindex.csv` | 130 MB, 300 columns | Hourly electricity use, production and prices for 32 countries in Europe |
+| OPSD Weather Data, version 2020-09-16 | `weather_data.csv` | 234 MB, 85 columns | Hourly temperature and sunlight for each country, 1980 to 2019 |
 
-Of the 300 + 85 columns, **the project uses only 2**: GB load and GB temperature.
+The two files have 385 columns in total. **We use only 2 of them:** electricity use and temperature for Great Britain.
 
-## 2. Columns selected from the raw data
+## 2. The columns we use
 
-| Raw column | Renamed to | Unit | Role |
+| Original column | New name | Unit | What it is |
 |---|---|---|---|
-| `GB_GBN_load_actual_entsoe_transparency` | `load` | MW | **Target**: actual hourly electricity demand in Great Britain |
-| `GB_temperature` | `temperature` | °C | **Input**: average air temperature for GB |
+| `GB_GBN_load_actual_entsoe_transparency` | `load` | MW | How much electricity Great Britain used in each hour. **This is what we forecast** |
+| `GB_temperature` | `temperature` | °C | The air temperature in Great Britain in each hour |
 
-**Columns not used, and why:**
+**Columns we do not use, and why:**
 
-| Column group | Reason for exclusion |
+| Columns | Why we do not use them |
 |---|---|
-| GB load forecast (`GB_GBN_load_forecast_*`) | The grid operator's own forecast. Not part of the proposal |
-| Day-ahead price | Price is driven by demand (an outcome, not a cause) and is not known when the forecast is made |
-| Wind and solar generation and capacity | Supply-side variables. Using them would need their own forecasts and is outside the scope |
-| Solar radiation | Kept out to keep the comparison focused. Temperature is the weather variable named in RQ4 |
-| `GB_NIR_*`, `GB_UKM_*` | Northern Ireland and UK total. The project targets Great Britain (`GBN`) |
-| Other countries (incl. Germany) | The project uses Great Britain only |
-| Year 2020 | COVID-19 lockdowns changed normal demand patterns |
+| GB load forecast (`GB_GBN_load_forecast_*`) | This is the grid company's own forecast. We want to make our own |
+| Electricity price | The price depends on how much electricity is used. It is a result, not a cause, and it is not known in advance |
+| Wind and solar power | These are about making electricity, not using it. We would need to forecast them too |
+| Sunlight | We keep the study simple. Temperature is the weather input we test (RQ4) |
+| `GB_NIR_*`, `GB_UKM_*` | Northern Ireland and the whole UK. We only study Great Britain (`GBN`) |
+| Other countries | We only study Great Britain |
+| The year 2020 | COVID-19 lockdowns changed how people used electricity |
 
-**Study period:** 1 Jan 2015 to 31 Dec 2019, hourly, in UTC. That is **43,824 rows**.
+**Time period:** 1 January 2015 to 31 December 2019, one row per hour. That is **43,824 rows**.
 
 ## 3. What the data looks like
 
-| | GB load (MW) | GB temperature (°C) |
+| | Electricity use (MW) | Temperature (°C) |
 |---|---|---|
-| Mean | 35,523 | 9.9 |
-| Std. dev. | 7,749 | 5.5 |
-| Range after cleaning | 14,356–57,388 | −4.5 to 29.1 |
-| Missing hours | 6 (two 3-hour gaps, both at the March clock change) | 0 |
-| Wrong values | 109 hours: 24 below 10,000 MW, 59 one-hour spikes, 26 in too-low blocks | — |
-| Total hours filled | 115 (0.26%), 71 of them in 2019 | — |
+| Average | 35,523 | 9.9 |
+| Lowest to highest (after cleaning) | 14,356 to 57,388 | −4.5 to 29.1 |
+| Missing hours | 6 (on the two days the clocks went forward in March) | 0 |
+| Wrong values | 109 hours: 24 below 10,000 MW, 59 sudden jumps, 26 in blocks of low values | none |
+| Hours we filled | 115 (0.26%), 71 of them in 2019 | none |
 
-- There are strong **daily (24 h)** and **weekly (168 h)** cycles, and a clear **yearly** cycle (winter demand ~45–55 GW, summer ~25–35 GW).
-- Average demand: weekdays 36,727 MW, weekends 33,052 MW, bank holidays 31,846 MW. Holidays behave like Sundays, which is why `is_holiday` is a feature and why RQ3 analyses holiday errors separately.
-- Daily mean load vs daily mean temperature: **r = −0.74**, so colder days mean higher demand. Hourly, the correlation is only −0.13 because the daily cycle dominates. The temperature effect shows up in the level of the day, not the shape of each hour.
-- Wrong values are ENTSO-E reporting glitches, found with three rules: (1) load below 10,000 MW; (2) one-hour spikes more than 5,000 MW away from both neighbours in the same direction; (3) load below 65% of the average of the same hour last week and next week, skipping bank holidays and 24 Dec – 2 Jan. Most of them are in the 2019 test year, so cleaning them matters for a fair evaluation.
+- Electricity use repeats **every day** (low at night, high in the evening) and **every week** (lower at weekends). It is also higher in **winter** (about 45,000-55,000 MW) than in **summer** (about 25,000-35,000 MW).
+- On average, use is 36,727 MW on weekdays, 33,052 MW at weekends and 31,846 MW on bank holidays. **A bank holiday is like a Sunday.**
+- **Colder days use more electricity.** The daily average use and the daily average temperature go together strongly (correlation −0.74).
+- The wrong values are mistakes in the published data. We found them with three simple rules (see [ABOUT.md](ABOUT.md)). Most of them are in 2019, our test year, so fixing them makes the test fair.
 
-## 4. Engineered features
+## 4. The 11 features
 
-`t` is the hour being forecast. Every feature only uses information available at forecast time, so there is no look-ahead leakage.
+A feature is a piece of information we give to a model. Every feature only uses information we would already know
+at the time of the forecast, so the models never "see the future".
 
-| # | Feature | Group | Definition | Why it is included | Corr. with `y` |
-|---|---|---|---|---|---|
-| 1 | `lag_1` | Lag | Load 1 hour before *t* | Demand changes smoothly from hour to hour | 0.95 |
-| 2 | `lag_24` | Lag | Load at the same hour yesterday | Daily cycle | 0.94 |
-| 3 | `lag_168` | Lag | Load at the same hour last week | Weekly cycle (also the seasonal-naive forecast) | 0.95 |
-| 4 | `rolling_mean_24` | Rolling | Mean of the previous 24 hours | Current daily level | 0.52 |
-| 5 | `rolling_mean_168` | Rolling | Mean of the previous 168 hours | Weekly level / slow trend | 0.47 |
-| 6 | `hour` | Calendar | Hour of day, 0–23 (UK local time) | Morning and evening peaks | 0.51 |
-| 7 | `day_of_week` | Calendar | 0 = Mon … 6 = Sun | Weekday/weekend pattern | −0.16 |
-| 8 | `month` | Calendar | 1–12 | Seasonality | −0.16 |
-| 9 | `is_weekend` | Calendar | 1 if Sat/Sun | Lower weekend demand (RQ3) | −0.20 |
-| 10 | `is_holiday` | Calendar | 1 if an England & Wales bank holiday (`holidays` package) | Holiday demand drop (RQ3) | −0.07 |
-| 11 | `temperature` | Weather | GB temperature at hour *t* | Heating demand (RQ4) | −0.14 (hourly), −0.74 (daily) |
+| # | Feature | Group | What it is | Why we use it |
+|---|---|---|---|---|
+| 1 | `lag_1` | Past use | Use 1 hour before | Use changes slowly from one hour to the next |
+| 2 | `lag_24` | Past use | Use at the same hour yesterday | Use repeats every day |
+| 3 | `lag_168` | Past use | Use at the same hour last week | Use repeats every week |
+| 4 | `rolling_mean_24` | Past use | Average use of the last 24 hours | How high use is today |
+| 5 | `rolling_mean_168` | Past use | Average use of the last 168 hours (one week) | How high use is this week |
+| 6 | `hour` | Calendar | Hour of the day, 0 to 23 (UK time) | Use is low at night and high in the evening |
+| 7 | `day_of_week` | Calendar | 0 = Monday to 6 = Sunday | Each day of the week is a bit different |
+| 8 | `month` | Calendar | 1 to 12 | Use is higher in winter |
+| 9 | `is_weekend` | Calendar | 1 on Saturday and Sunday | Use is lower at weekends |
+| 10 | `is_holiday` | Calendar | 1 on a bank holiday in England and Wales | Use is much lower on bank holidays |
+| 11 | `temperature` | Weather | Temperature in that hour | People use more electricity when it is cold |
 
 Notes:
-- **Rolling means** are computed on the series shifted by one hour, so the value being predicted is never included.
-- **Calendar features** use Europe/London local time, because behaviour follows clock time. The data itself stays in UTC so every day has exactly 24 hours.
-- **Temperature** is the *observed* value, which stands in for a perfect weather forecast. This is a stated limitation: real-world errors would be somewhat higher.
-- **For the 24-hour horizon,** `lag_1` is not yet known for hours 2–24. MLForecast handles this recursively by feeding its own predictions back in as lags. This is the standard approach and is applied the same way to all models.
-- The correlations are a first sanity check only. Real feature importance is measured later through XGBoost importance scores and the ablation study.
+- The rolling averages stop one hour before the forecast hour, so the value we want to forecast is never inside them.
+- The calendar features use UK time, because people follow the clock. The data itself is in UTC, so every day has exactly 24 hours.
+- We use the real, measured temperature. This is like having a perfect weather forecast, so real-life errors would be a little bigger.
+- When XGBoost forecasts 24 hours ahead, it does not know the real use for hours 2 to 24 yet. So it uses its own forecasts for those hours, one hour after another.
 
-## 5. Which algorithm uses which features
+## 5. Which model uses which features
 
-| Model | Library | Input features |
+| Model | Tool | Information it uses |
 |---|---|---|
-| Seasonal naive | StatsForecast | `y` only. Forecast = value 168 h earlier. No training |
-| SARIMA | StatsForecast AutoARIMA | `y` history only (seasonal period 24). Orders chosen by AutoARIMA on the 8 weeks before 2019 |
+| Seasonal naive | StatsForecast | Only past use. The forecast is the value from 168 hours (one week) before. No training |
+| SARIMA | StatsForecast | Only past use, with a daily pattern of 24 hours. Its settings are chosen automatically on the 8 weeks before 2019 |
 | XGBoost | MLForecast | All 11 features |
-| LSTM | NeuralForecast | 168-hour window of `y` + calendar features + `temperature` as future-known inputs |
-| PatchTST | NeuralForecast | 168-hour window of `y` only. The library's PatchTST is univariate and has no exogenous inputs |
+| LSTM | NeuralForecast | The last 168 hours of use, plus the calendar features and temperature |
+| PatchTST | NeuralForecast | Only the last 168 hours of use. This model cannot take extra information |
 
-## 6. Feature ablation (RQ4)
+## 6. Testing the features (RQ4)
 
-XGBoost and LSTM are re-run on the validation year 2018 with:
+We train XGBoost and the LSTM again on 2018 (the validation year) with four groups of features:
 
-| Set | Features |
+| Group | Features |
 |---|---|
-| A: history only | lags + rolling means |
+| A: past use only | lags and rolling averages |
 | B: + calendar | A + hour, day_of_week, month, is_weekend, is_holiday |
 | C: + temperature | A + temperature |
-| D: full | A + calendar + temperature |
+| D: everything | A + calendar + temperature |
 
-The difference in MAE between A, B, C and D answers RQ4.
+If the error goes down from A to B, C or D, the extra features help. This answers RQ4.
 
-## 7. Pipeline
+## 7. All the steps
 
 ```
-1. Download     OPSD raw CSVs                         → datasets/raw/          (01)
-2. Clean        GB load + GB temperature, 2015–2019;  → datasets/processed/    (02)
-                3 rules for wrong values → missing;
-                gaps ≤3 h: linear interpolation;
-                gaps >3 h: same hour previous week;
-                every filled value flagged
-3. EDA          patterns that justify each feature                             (03)
-4. Features     11 features above
-5. Split        train 2015–2017 | validation 2018 | test 2019 (time-ordered, never random)
-                                                      → datasets/processed/    (04)
-6. Train/tune   5 models; hyperparameters chosen on 2018 only
-7. Forecast     rolling origin: a fresh 1–24 h forecast from every day of 2019
-8. Evaluate     MAE, RMSE, MAPE per horizon; skill vs seasonal naive;
-                Diebold-Mariano test; errors by peak / weekend / holiday;
-                ablation sets A–D
-9. Present      results/ figures & tables → Streamlit dashboard
+1. Download      the original OPSD files                         → datasets/raw/          (notebook 01)
+2. Clean         keep GB use and temperature, 2015-2019;           → datasets/processed/    (notebook 02)
+                 find wrong values with 3 rules;
+                 gaps of 3 hours or less: straight line;
+                 longer gaps: same hour last week;
+                 mark every filled hour
+3. Explore       look at the patterns that explain each feature                            (notebook 03)
+4. Features      make the 11 features above
+5. Split         train 2015-2017 | validation 2018 | test 2019 (by time, never mixed)
+                                                                    → datasets/processed/    (notebook 04)
+6. Train         5 models; settings chosen using 2018 only                                  (notebooks 05-07)
+7. Forecast      every day of 2019, forecast the next 24 hours
+8. Compare       errors for each hour ahead; compare with the simplest model;
+                 Diebold-Mariano test; errors at peak hours, weekends, holidays;
+                 feature groups A-D                                                         (notebooks 08-09)
+9. Show          charts and tables in results/, and the web app
 ```
