@@ -1,0 +1,21 @@
+# full OPSD downloads are bigger than GitHub's 100 MB limit - notebook 01 downloads them again
+datasets/raw/time_series_60min_singleindex.csv
+datasets/raw/weather_data.csv
+
+# private settings
+.env
+
+# documents
+*.docx
+*.doc
+*.zip
+*.pdf
+*.ppt
+*.pptx
+
+# python
+.venv/
+__pycache__/
+.ipynb_checkpoints/
+.DS_Store
+lightning_logs/
