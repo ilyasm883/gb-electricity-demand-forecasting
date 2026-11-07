@@ -109,7 +109,40 @@ See [ABOUT.md](ABOUT.md) for how each choice is linked to the literature review,
 - **Tune (choose the settings) with 2018 only:** XGBoost tries a few settings and keeps the best one. LSTM and PatchTST stop training when they stop getting better on 2018. SARIMA chooses its own settings.
 - **Test on 2019:** every day at midnight, each model forecasts the next 24 hours. That is 8,760 forecasts per model. We use the test year only once.
 
-### 11. How do we measure the errors?
+### 11. Why is each model trained only once?
+
+This question can mean two things.
+
+**a) Why is the model not trained again during 2019?**
+
+Each model learns once, from the data before 2019. Then it forecasts all 365 days of 2019 without learning again.
+Every day it gets the newest real data as input, but the model itself does not change. We do this for three reasons:
+
+- **It is fair.** Every model gets exactly the same information at every forecast. So any difference comes from the model, not from how often it was updated.
+- **It is a strict test.** The models must work for a whole year without any change.
+- **Training again every day costs a lot of time, and did not help.** We tried it for SARIMA for two weeks. Training it again every day did not make it better (error 2,660 MW with daily training, 2,612 MW without), but it took much longer.
+
+In real life, a company would train the models again from time to time, for example every month. This is good future work.
+
+**b) Why is each model run only once, and not many times?**
+
+| Model | Does a second run give a different result? |
+|---|---|
+| Seasonal naive | No. It is a fixed rule |
+| SARIMA | No. It is a fixed calculation |
+| XGBoost | Almost no. Its random seed is fixed (42) |
+| LSTM and PatchTST | **Yes, a little.** Deep learning starts from random numbers, so every run is a bit different |
+
+So running three of the five models again would not change anything. For the two deep learning models:
+
+- We fixed the random seeds, so anyone can repeat our results.
+- The test is big: 8,760 forecasts for each model.
+- The Diebold-Mariano test checks that the differences between models are real and not luck.
+
+But we agree that running the deep learning models several times, with different random seeds, and showing the average would make the results stronger.
+This is a limit of the study (see question 15) and good future work (see question 16).
+
+### 12. How do we measure the errors?
 
 | Measure | What it means |
 |---|---|
@@ -119,7 +152,7 @@ See [ABOUT.md](ABOUT.md) for how each choice is linked to the literature review,
 | **Skill** | How much better than the simplest model, in %. Higher is better |
 | **Diebold-Mariano test** | Checks if the difference between two models is real or just luck (real if p < 0.05) |
 
-### 12. What are the results?
+### 13. What are the results?
 
 **RQ1: Which model is the most accurate? (2019)**
 
@@ -156,14 +189,14 @@ See [ABOUT.md](ABOUT.md) for how each choice is linked to the literature review,
 
 Calendar information helps the most. Temperature helps the LSTM much more than XGBoost. Both together give the smallest error for both models.
 
-### 13. What does this mean?
+### 14. What does this mean?
 
 - **A well-tuned XGBoost with good features beats the deep learning models** for forecasting one day ahead, and it trains much faster.
 - **The best model depends on how far ahead you forecast:** SARIMA for the next hour, XGBoost (or LSTM) for 24 hours ahead.
 - **One average error is not enough:** the ranking changes with the hours ahead, the type of day and the time of day.
 - **Calendar information, especially bank holidays, is the most useful input.**
 
-### 14. What are the limits of this study?
+### 15. What are the limits of this study?
 
 - Only **one country** (Great Britain) and **one test year** (2019).
 - We use the **real temperature**, which is like a perfect weather forecast, so real-life errors would be a little bigger.
@@ -171,7 +204,7 @@ Calendar information helps the most. Temperature helps the LSTM much more than X
 - The deep learning models mostly use their standard settings, and each model was trained only once.
 - Every forecast starts at midnight, so each "hour ahead" is also a fixed time of day.
 
-### 15. What could be done next?
+### 16. What could be done next?
 
 - Use **real weather forecasts** instead of the measured temperature.
 - Test **more countries and newer years** (2020 and later).
