@@ -79,24 +79,31 @@ You will see `(.venv)` at the start of the line when the environment is active. 
 
 ## 3. Run the notebooks
 
-Start Jupyter (with the environment active):
+1. Start Jupyter (with the environment active):
 
-```bash
-jupyter notebook notebooks
-```
+   ```bash
+   jupyter notebook
+   ```
 
-Your browser opens. Run the notebooks **in order, 01 to 04**. In each notebook use **Kernel → Restart Kernel and Run All Cells**.
-Each notebook saves its output, which the next notebook reads.
+2. Jupyter opens in your browser. Click the **`notebooks`** folder.
+3. Open each notebook file **in this order** and run it:
 
-| Notebook | Time | What it does |
+| Order | Notebook file | What it does |
 |---|---|---|
-| 01 | 1-3 min | Downloads the two OPSD files (about 365 MB) into `datasets/raw/`. Skipped if the files are already there |
-| 02 | under 1 min | Keeps GB load and temperature for 2015-2019, finds wrong values with three rules and fills them |
-| 03 | under 1 min | Exploratory data analysis: daily, weekly and yearly patterns, holidays, temperature, autocorrelation |
-| 04 | under 1 min | Builds the 11 features and splits the data: train 2015-2017, validation 2018, test 2019 |
+| 1 | `01_download_dataset.ipynb` | Downloads the two OPSD files (about 365 MB) into `datasets/raw/`. Skipped if the files are already there |
+| 2 | `02_preprocessing.ipynb` | Keeps GB load and temperature for 2015-2019, finds wrong values with three rules and fills them |
+| 3 | `03_eda.ipynb` | Exploratory data analysis: daily, weekly and yearly patterns, holidays, temperature, autocorrelation |
+| 4 | `04_feature_engineering.ipynb` | Builds the 11 features and splits the data: train 2015-2017, validation 2018, test 2019 |
 
+**How to run one notebook:**
+
+1. Click the notebook file to open it.
+2. In the menu, click **Kernel → Restart Kernel and Run All Cells** (or **Run → Run All Cells**).
+3. Wait until every cell has finished. A cell that is still running shows `[*]`; when it is done it shows a number, such as `[5]`.
+4. Close the notebook and open the next one.
+
+Each notebook saves its output, which the next notebook reads, so always keep this order.
 The full raw files are not stored on GitHub because they are bigger than 100 MB, so **always run notebook 01 first**.
-The outputs of notebooks 02-04 are already in `datasets/processed/` and `results/figures/`.
 
 ---
 
