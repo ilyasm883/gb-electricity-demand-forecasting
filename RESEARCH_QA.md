@@ -139,8 +139,8 @@ So running three of the five models again would not change anything. For the two
 - The test is big: 8,760 forecasts for each model.
 - The Diebold-Mariano test checks that the differences between models are real and not luck.
 
-But we agree that running the deep learning models several times, with different random seeds, and showing the average would make the results stronger.
-This is a limit of the study (see question 13) and good future work (see question 14).
+To be sure, we also trained LSTM and PatchTST **5 times each, with 5 different seeds** (notebook 10).
+We show the average and the spread of the 5 runs, and we check that the main findings stay the same in every run.
 
 ### 12. How do we measure the errors?
 
@@ -152,12 +152,15 @@ This is a limit of the study (see question 13) and good future work (see questio
 | **Skill** | How much better than the simplest model, in %. Higher is better |
 | **Diebold-Mariano test** | Checks if the difference between two models is real or just luck (real if p < 0.05) |
 
+We also compare our models with the **official forecast** for Great Britain, which is in the same data file (notebook 10).
+The official forecast measures demand a little differently, so we also show it with its average error corrected, using 2018 only.
+
 ### 13. What are the limits of this study?
 
 - Only **one country** (Great Britain) and **one test year** (2019).
 - We use the **real temperature**, which is like a perfect weather forecast, so real-life errors would be a little bigger.
 - 2020 is not included, so the models are not tested on unusual events like COVID-19.
-- The deep learning models mostly use their standard settings, and each model was trained only once.
+- The deep learning models mostly use their standard settings (but we trained them 5 times with different seeds).
 - Every forecast starts at midnight, so each "hour ahead" is also a fixed time of day.
 
 ### 14. What could be done next?
@@ -166,7 +169,7 @@ This is a limit of the study (see question 13) and good future work (see questio
 - Test **more countries and newer years** (2020 and later).
 - Try **more models**, like N-BEATS, NHITS or new "foundation" models such as TimesFM.
 - Give a **range** instead of one number (for example "between 30,000 and 32,000 MW").
-- **Tune the deep learning models more**, and train each model several times.
+- **Tune the deep learning models more.**
 - Start forecasts **every hour** instead of once a day.
 - Connect the web app to **live data** so it can forecast real days in the future.
 

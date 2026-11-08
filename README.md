@@ -14,7 +14,7 @@ The data comes from Open Power System Data, for the years 2015 to 2019.
 ```
 implementation/
 ├── datasets/
-│   ├── raw/                     # gb_columns_raw.csv: the 3 original columns we use
+│   ├── raw/                     # gb_columns_raw.csv: the 3 original columns we use, and the official forecast
 │   └── processed/               # clean data, features, and the train / validation / test files
 ├── notebooks/
 │   ├── 01_download_dataset.ipynb      # download the original data (optional)
@@ -25,7 +25,8 @@ implementation/
 │   ├── 06_xgboost.ipynb               # XGBoost model, and save it for the web app
 │   ├── 07_deep_models.ipynb           # LSTM and PatchTST models
 │   ├── 08_evaluation.ipynb            # compare all models (RQ1, RQ2)
-│   └── 09_error_analysis.ipynb        # where the models go wrong, and which features help (RQ3, RQ4)
+│   ├── 09_error_analysis.ipynb        # where the models go wrong, and which features help (RQ3, RQ4)
+│   └── 10_extra_checks.ipynb          # compare with the official forecast, and train the deep models with 5 seeds
 ├── results/
 │   ├── forecasts/               # the 2019 forecasts of every model
 │   ├── tables/                  # result tables (CSV)
@@ -128,6 +129,7 @@ Notebook 01 is only needed if you want to download the original data again (abou
 | 6 | `07_deep_models.ipynb` | LSTM and PatchTST models (faster with a GPU) |
 | 7 | `08_evaluation.ipynb` | Compares all models on 2019 (RQ1 and RQ2) |
 | 8 | `09_error_analysis.ipynb` | Finds where the models make mistakes and which features help (RQ3 and RQ4) |
+| 9 | `10_extra_checks.ipynb` | Compares the models with the official forecast, and trains LSTM and PatchTST 5 times with different seeds (faster with a GPU) |
 
 **How to run a notebook:**
 
