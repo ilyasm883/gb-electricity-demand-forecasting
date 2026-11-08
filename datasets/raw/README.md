@@ -11,9 +11,12 @@ It has the 3 original columns we need from Open Power System Data. The values ar
 
 It goes from 31 December 2014 to 30 September 2020. The temperature is empty after 2019, because the weather file ends there.
 
+**`gb_official_forecast_raw.csv`** has the official day-ahead forecast for Great Britain (`GB_GBN_load_forecast_entsoe_transparency`),
+from the same time series file. It is **not** used to train any model. Notebook 10 only uses it to compare our models with the official forecast.
+
 ## The full original files (optional)
 
-Notebook `01_download_dataset.ipynb` downloads the two full files into this folder, and makes `gb_columns_raw.csv` from them:
+Notebook `01_download_dataset.ipynb` downloads the two full files into this folder, and makes `gb_columns_raw.csv` and `gb_official_forecast_raw.csv` from them:
 
 | File | Size | Source |
 |---|---|---|
