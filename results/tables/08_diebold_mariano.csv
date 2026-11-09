@@ -1,0 +1,21 @@
+horizon,model A,model B,DM,p_value,better model
+1,Seasonal naive,SARIMA,15.39,0.0,SARIMA
+1,Seasonal naive,XGBoost,14.7,0.0,XGBoost
+1,Seasonal naive,LSTM,7.89,0.0,LSTM
+1,Seasonal naive,PatchTST,15.34,0.0,PatchTST
+1,SARIMA,XGBoost,-3.69,0.0002,SARIMA
+1,SARIMA,LSTM,-11.21,0.0,SARIMA
+1,SARIMA,PatchTST,-3.07,0.0022,SARIMA
+1,XGBoost,LSTM,-10.74,0.0,XGBoost
+1,XGBoost,PatchTST,1.52,0.1284,no significant difference
+1,LSTM,PatchTST,11.11,0.0,PatchTST
+24,Seasonal naive,SARIMA,5.19,0.0,SARIMA
+24,Seasonal naive,XGBoost,9.54,0.0,XGBoost
+24,Seasonal naive,LSTM,7.87,0.0,LSTM
+24,Seasonal naive,PatchTST,7.58,0.0,PatchTST
+24,SARIMA,XGBoost,4.81,0.0,XGBoost
+24,SARIMA,LSTM,4.41,0.0,LSTM
+24,SARIMA,PatchTST,3.45,0.0006,PatchTST
+24,XGBoost,LSTM,-1.6,0.1092,no significant difference
+24,XGBoost,PatchTST,-2.99,0.0028,XGBoost
+24,LSTM,PatchTST,-1.8,0.0715,no significant difference
