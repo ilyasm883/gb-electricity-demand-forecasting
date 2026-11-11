@@ -1,0 +1,21 @@
+model,seed,horizon,DM,p_value,better model
+LSTM,1,1,-10.74,0.0,XGBoost
+LSTM,1,24,-1.6,0.1092,no significant difference
+LSTM,2,1,-10.7,0.0,XGBoost
+LSTM,2,24,-0.72,0.4726,no significant difference
+LSTM,3,1,-11.27,0.0,XGBoost
+LSTM,3,24,-0.97,0.3338,no significant difference
+LSTM,4,1,-10.47,0.0,XGBoost
+LSTM,4,24,-1.55,0.1215,no significant difference
+LSTM,5,1,-10.9,0.0,XGBoost
+LSTM,5,24,-1.96,0.0496,XGBoost
+PatchTST,1,1,1.52,0.1284,no significant difference
+PatchTST,1,24,-2.99,0.0028,XGBoost
+PatchTST,2,1,3.32,0.0009,PatchTST
+PatchTST,2,24,-3.03,0.0024,XGBoost
+PatchTST,3,1,4.5,0.0,PatchTST
+PatchTST,3,24,-2.98,0.0028,XGBoost
+PatchTST,4,1,1.25,0.2097,no significant difference
+PatchTST,4,24,-3.18,0.0015,XGBoost
+PatchTST,5,1,4.79,0.0,PatchTST
+PatchTST,5,24,-3.48,0.0005,XGBoost

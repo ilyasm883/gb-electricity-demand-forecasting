@@ -1,0 +1,11 @@
+horizon,model,DM,p_value,better model
+1,Seasonal naive,6.98,0.0,Official (bias corrected)
+1,SARIMA,-13.53,0.0,SARIMA
+1,XGBoost,-13.44,0.0,XGBoost
+1,LSTM,-1.53,0.127,no significant difference
+1,PatchTST,-13.75,0.0,PatchTST
+24,Seasonal naive,7.99,0.0,Official (bias corrected)
+24,SARIMA,3.42,0.0006,Official (bias corrected)
+24,XGBoost,-1.41,0.159,no significant difference
+24,LSTM,0.29,0.7732,no significant difference
+24,PatchTST,1.55,0.1207,no significant difference
