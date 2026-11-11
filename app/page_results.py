@@ -32,7 +32,7 @@ def show(model, features):
 # RQ1: overall accuracy
 def show_rq1():
     st.header("RQ1: Which model is most accurate?")
-    summary = load_table("08_summary.csv")
+    summary = load_table("08_overall_results.csv")
     summary = summary.sort_values("MAE").reset_index(drop=True)
 
     rq1 = pd.DataFrame()
