@@ -5,7 +5,9 @@ It compares five models: **seasonal naive, SARIMA, XGBoost, LSTM and PatchTST**.
 The data comes from Open Power System Data, for the years 2015 to 2019.
 
 - [ABOUT.md](ABOUT.md): the data, the research questions, the research gap, why we chose the models, and how we did it.
-- [RESEARCH_QA.md](RESEARCH_QA.md): questions and answers about the research.
+- [RESEARCH_QA.md](RESEARCH_QA.md): questions and answers about the research, including all results.
+
+**Main result:** XGBoost makes the best forecasts for 2019. On average it is 1,080 MW (3.3%) away from the real value. This is 45% better than the simplest model.
 
 ---
 

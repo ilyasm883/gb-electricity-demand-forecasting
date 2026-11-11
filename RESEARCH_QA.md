@@ -155,7 +155,56 @@ We show the average and the spread of the 5 runs, and we check that the main fin
 We also compare our models with the **official forecast** for Great Britain, which is in the same data file (notebook 10).
 The official forecast measures demand a little differently, so we also show it with its average error corrected, using 2018 only.
 
-### 13. What are the limits of this study?
+### 13. What are the results?
+
+**RQ1: Which model is the most accurate? (2019)**
+
+| Rank | Model | MAE (MW) | RMSE (MW) | MAPE (%) | Skill (%) |
+|---|---|---|---|---|---|
+| **1** | **XGBoost** | **1,080** | **1,412** | **3.29** | **45.4** |
+| 2 | LSTM | 1,139 | 1,484 | 3.54 | 42.4 |
+| 3 | PatchTST | 1,246 | 1,713 | 3.75 | 37.0 |
+| 4 | SARIMA | 1,845 | 2,528 | 5.49 | 6.7 |
+| 5 | Seasonal naive | 1,977 | 2,689 | 6.09 | 0.0 |
+
+**XGBoost is the best model overall.** The LSTM is a close second.
+
+**RQ2: 1 hour ahead or 24 hours ahead? (MAPE)**
+
+- **SARIMA is the best 1 hour ahead** (1.70%), but it gets much worse at 24 hours (4.90%).
+- **XGBoost is the best 24 hours ahead** (4.01%). It starts at 2.07% for 1 hour ahead.
+- **The LSTM hardly changes** (4.33% to 4.25%). It is not so good at 1 hour ahead, but it stays steady.
+- The Diebold-Mariano test shows that SARIMA is really the best 1 hour ahead. At 24 hours ahead, XGBoost and LSTM are equally good.
+
+**RQ3: Where are the biggest mistakes?**
+
+- **Bank holidays are the hardest days.** Models without holiday information do the worst (seasonal naive error ×3, PatchTST ×2.5). XGBoost and LSTM know about holidays, so their error only goes up by about 25-35%.
+- **Peak hours (16:00-19:59)** are harder for most models. The LSTM is the best at peak hours.
+- SARIMA is weak at weekends, because it only learns the daily pattern, not the weekly one.
+
+**RQ4: Do temperature and calendar information help? (tested on 2018)**
+
+| Features added | XGBoost error | LSTM error |
+|---|---|---|
+| + calendar | −32.8% | −28.5% |
+| + temperature | −5.4% | −23.2% |
+| + both | **−37.5%** | **−33.5%** |
+
+Calendar information helps the most. Temperature helps the LSTM much more than XGBoost. Both together give the smallest error for both models.
+
+**Extra checks (notebook 10)**
+
+- **Official forecast:** as published, the official forecast has an error of 2,312 MW, because it is always about 2,000 MW too low. With this corrected, its error is 1,223 MW. XGBoost (1,081 MW) and LSTM (1,142 MW) are better. But the official forecast is made the day before, so it has a harder task, and at 24 hours ahead no model is really better than it.
+- **5 seeds:** LSTM gets 1,147 ± 13 MW and PatchTST 1,251 ± 22 MW over 5 runs. The order of the models is the same in every run.
+
+### 14. What does this mean?
+
+- **A well-tuned XGBoost with good features beats the deep learning models** for forecasting one day ahead.
+- **The best model depends on how far ahead you forecast:** SARIMA for the next hour, XGBoost (or LSTM) for 24 hours ahead.
+- **One average error is not enough:** the ranking changes with the hours ahead, the type of day and the time of day.
+- **Calendar information, especially bank holidays, is the most useful input.**
+
+### 15. What are the limits of this study?
 
 - Only **one country** (Great Britain) and **one test year** (2019).
 - We use the **real temperature**, which is like a perfect weather forecast, so real-life errors would be a little bigger.
@@ -163,7 +212,7 @@ The official forecast measures demand a little differently, so we also show it w
 - The deep learning models mostly use their standard settings (but we trained them 5 times with different seeds).
 - Every forecast starts at midnight, so each "hour ahead" is also a fixed time of day.
 
-### 14. What could be done next?
+### 16. What could be done next?
 
 - Use **real weather forecasts** instead of the measured temperature.
 - Test **more countries and newer years** (2020 and later).
