@@ -112,6 +112,23 @@ What each line does:
 
 When the second line works, the line in PowerShell starts with `(.venv)`.
 
+**When to type `py` and when to type `python`**
+
+| When | Type | Why |
+|---|---|---|
+| Before the `.venv` is on (only the first line) | `py -3.11` | `py` is the Python launcher of Windows. With `-3.11` it picks Python 3.11, even if other Python versions are installed |
+| After the `.venv` is on (the line starts with `(.venv)`) | `python` | Now `python` always means the Python 3.11 of this project |
+
+Do not type `py` after the `.venv` is on. It can pick the main Python of the computer, and then the packages are "not found".
+
+**If `py` is not found**, type `python --version`. If it shows `Python 3.11.x`, use this as the first line instead:
+
+```powershell
+python -m venv .venv
+```
+
+Then go on with the second line as normal.
+
 **If you see "running scripts is disabled on this system"** after the second line, type:
 
 ```powershell
@@ -175,7 +192,8 @@ streamlit run app\app.py
 
 | Problem | Fix |
 |---|---|
-| `py` is not found | Python is not on PATH. Install Python 3.11 again and tick **"Add python.exe to PATH"** (step 1) |
+| `py` is not found | Type `python --version`. If it shows `Python 3.11.x`, use `python -m venv .venv` as the first line of step 4. If `python` is not found either, install Python 3.11 again and tick **"Add python.exe to PATH"** (step 1) |
+| Packages are "not found" after the install | You typed `py` after the `.venv` was on. Use `python` instead (see step 4) |
 | "running scripts is disabled on this system" | Type `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned`, then `Y`, and try again (step 4) |
 | `streamlit` is not found | The `.venv` is not on. Type `.venv\Scripts\Activate.ps1` and try again |
 | `FileNotFoundError` when the app starts | PowerShell is in the wrong folder. It must be in the project folder, not inside the `app` folder (step 3) |
