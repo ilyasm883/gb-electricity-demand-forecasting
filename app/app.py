@@ -23,6 +23,7 @@ with st.sidebar.expander("Menu: open another page"):
 st.sidebar.write("Hourly electricity demand forecasting for Great Britain with five models.")
 st.sidebar.write("Data: Open Power System Data, 2015-2019")
 st.sidebar.write("Train: 2015-2017, validation: 2018, test: 2019")
+st.sidebar.write("The Prediction page can also forecast the latest days with live data (Elexon and Open-Meteo).")
 st.sidebar.warning("Academic prototype (COM748 MSc project). Not a tool for real grid operation.")
 
 # show the chosen page

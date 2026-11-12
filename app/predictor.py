@@ -39,3 +39,19 @@ def predict_day(data, model, features, day, temperature_change=0, make_holiday=F
 
     today["forecast"] = forecasts
     return today
+
+
+# Forecast for a day that has no real demand yet (today or a later day).
+# The days between yesterday and the chosen day have no real demand either,
+# so we forecast them first, one after the other, and use these forecasts as the history.
+def predict_future_day(data, model, features, day, temperature_change=0, make_holiday=False):
+    data = data.copy()
+    one_day = data[data["load"].isnull()]["time"].min().normalize()
+
+    while one_day < pd.Timestamp(day):
+        result = predict_day(data, model, features, one_day)
+        rows = (data["time"] >= one_day) & (data["time"] < one_day + pd.Timedelta(days=1))
+        data.loc[rows, "load"] = result["forecast"].values
+        one_day = one_day + pd.Timedelta(days=1)
+
+    return predict_day(data, model, features, day, temperature_change, make_holiday)
