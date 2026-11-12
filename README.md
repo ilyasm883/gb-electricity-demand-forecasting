@@ -162,10 +162,40 @@ The app has four pages. Use the menu on the left:
 
 | Page | What you can do |
 |---|---|
-| **Prediction** | Choose a day in 2019. XGBoost makes a forecast for the 24 hours of that day, next to the real values. You can change the temperature or make the day a bank holiday, and see how the forecast changes |
+| **Prediction** | Choose a day in 2019, one of the latest days up to yesterday, or a future day (today and the next 6 days). XGBoost makes a forecast for the 24 hours of that day, next to the real values. You can change the temperature or make the day a bank holiday, and see how the forecast changes |
 | **Compare models** | Choose a day and see the forecasts of all five models, and the error of each model on that day |
 | **Results** | Tables and charts for the four research questions. The best results are in bold |
 | **About** | Questions and answers about the research |
+
+### How the real demand after 2019 is collected
+
+The saved data of this project stops on 31 December 2019. The **Prediction** page can also forecast the latest days, up to yesterday.
+It can also forecast future days: today and the next 6 days.
+For these days the app downloads the data from the internet when you choose **Latest and future days (live data)**.
+
+| What | Where it comes from | How |
+|---|---|---|
+| Real demand | **Elexon**, the official data service of the GB electricity market. Dataset: Actual Total Load. Address: `https://data.elexon.co.uk/bmrs/api/v1/demand/actual/total` | The app asks for the last 42 days, ending yesterday. It is free and needs no account. The two half-hour values of each hour are averaged into one hourly value |
+| Temperature | **Open-Meteo**, a free weather data service | Hourly temperature, average of eight big cities (London, Birmingham, Manchester, Leeds, Glasgow, Bristol, Newcastle, Cardiff) |
+| Bank holidays | Python package `holidays` (England) | The same as in notebook 04 |
+
+Cleaning of the live demand:
+
+- Values that are clearly wrong are removed (below 12,000 MW, or a one-hour spike of more than 5,000 MW, the same spike rule as in notebook 02).
+- Missing hours are filled with a straight line between the hours around them. The page says how many hours of the chosen day were filled.
+
+Future days (today and the next 6 days):
+
+- There is no real demand for these days yet. The page shows **only the forecast**: no actual line and no error.
+- The temperature is the weather forecast from Open-Meteo for the same eight cities.
+- For today, XGBoost starts from the real demand up to yesterday. For a later day, it first forecasts the days in between and uses these forecasts in place of the real demand. So the further ahead the day, the less exact the forecast.
+
+Important:
+
+- The live days are **not** part of the tested results. All results in this project are for the test year 2019.
+- XGBoost was trained on 2015-2017 and is not trained again, so the error on the latest days is usually bigger than in 2019.
+- Only the last 42 days are downloaded and nothing is saved in the project. Without internet, only the 2019 option works.
+- The code is in `app/live_data.py`.
 
 ### Put the web app online (free)
 
