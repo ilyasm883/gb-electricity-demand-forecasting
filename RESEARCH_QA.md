@@ -150,7 +150,6 @@ We show the average and the spread of the 5 runs, and we check that the main fin
 | **RMSE** | Like MAE, but big mistakes count more |
 | **MAPE** | The average error as a percentage of the real value |
 | **Skill** | How much better than the simplest model, in %. Higher is better |
-| **Diebold-Mariano test** | Checks if the difference between two models is real or just luck (real if p < 0.05) |
 
 We also compare our models with the **official forecast** for Great Britain, which is in the same data file (notebook 10).
 The official forecast measures demand a little differently, so we also show it with its average error corrected, using 2018 only.
