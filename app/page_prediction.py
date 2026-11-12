@@ -9,16 +9,23 @@ from predictor import predict_day
 
 def show(data, model, features):
     st.title("Prediction")
-    st.subheader("Forecast one day with XGBoost (the best model)")
+    st.subheader("Forecast one day with XGBoost")
+
+    st.success(
+        "**Model used on this page: XGBoost.**\n\n"
+        "XGBoost is the most accurate of the five models in this project. It has the lowest error on the test year 2019. "
+        "Only XGBoost makes the forecast on this page. The other four models (seasonal naive, SARIMA, LSTM and PatchTST) "
+        "are not used here. You can see their forecasts on the **Compare models** page."
+    )
 
     st.info(
         "**How the forecast works**\n\n"
         "1. You choose a day in 2019.\n"
-        "2. The model looks at the real demand of the week before that day.\n"
+        "2. XGBoost looks at the real demand of the week before that day.\n"
         "3. It also uses the hour, day of the week, month, bank holiday and temperature of each hour.\n"
         "4. It forecasts the demand for each of the 24 hours of that day.\n"
         "5. The black line shows the real demand, so you can see how close the forecast is.\n\n"
-        "**Try it:** change the temperature or mark the day as a bank holiday. The model makes a new forecast "
+        "**Try it:** change the temperature or mark the day as a bank holiday. XGBoost makes a new forecast "
         "and the numbers below show how much it changed."
     )
 
@@ -102,11 +109,11 @@ def show(data, model, features):
     # chart
     fig = go.Figure()
     fig.add_trace(go.Scatter(x=normal["time"], y=normal["load"], name="Actual", line=dict(color="black", width=3)))
-    fig.add_trace(go.Scatter(x=normal["time"], y=normal["forecast"], name="Normal forecast"))
+    fig.add_trace(go.Scatter(x=normal["time"], y=normal["forecast"], name="XGBoost forecast"))
     if changed:
-        fig.add_trace(go.Scatter(x=what_if["time"], y=what_if["forecast"], name="Forecast with your changes",
+        fig.add_trace(go.Scatter(x=what_if["time"], y=what_if["forecast"], name="XGBoost forecast with your changes",
                                  line=dict(dash="dash")))
-    fig.update_layout(title="Actual and forecast demand", xaxis_title="Time (UTC)", yaxis_title="Load (MW)", height=450)
+    fig.update_layout(title="Real demand and the XGBoost forecast", xaxis_title="Time (UTC)", yaxis_title="Load (MW)", height=450)
     st.plotly_chart(fig, width="stretch")
 
     # hourly table
@@ -115,10 +122,25 @@ def show(data, model, features):
         table["time (UTC)"] = normal["time"].dt.strftime("%H:%M")
         table["temperature (°C)"] = normal["temperature"].round(1)
         table["actual (MW)"] = normal["load"].round()
-        table["normal forecast (MW)"] = normal["forecast"].round()
+        table["XGBoost forecast (MW)"] = normal["forecast"].round()
         if changed:
-            table["forecast with changes (MW)"] = what_if["forecast"].round()
+            table["XGBoost forecast with changes (MW)"] = what_if["forecast"].round()
         st.dataframe(table, hide_index=True, width="stretch")
 
-    st.caption("Hour 1 uses the real demand of the hour before. Hours 2-24 use the model's own forecasts, "
+    st.caption("Hour 1 uses the real demand of the hour before. Hours 2-24 use XGBoost's own forecasts, "
                "as in the evaluation. The temperature is the measured value (like a perfect weather forecast).")
+
+    with st.expander("Words used on this page"):
+        st.markdown(
+            "- **Demand (or load)**: how much electricity Great Britain uses in one hour.\n"
+            "- **MW (megawatt)**: the unit of demand. 1 MW is 1,000 kilowatts.\n"
+            "- **Actual**: the real demand that was measured.\n"
+            "- **Forecast**: the demand that XGBoost predicts.\n"
+            "- **Average forecast**: the average of the 24 hourly forecasts of the day.\n"
+            "- **Peak forecast**: the highest of the 24 hourly forecasts of the day.\n"
+            "- **MAE (Mean Absolute Error)**: on average, how many MW the forecast is away from the real demand. Lower is better.\n"
+            "- **MAPE (Mean Absolute Percentage Error)**: the same error as a percentage of the real demand. Lower is better.\n"
+            "- **Temperature change**: makes every hour of the day warmer or colder than it really was.\n"
+            "- **Bank holiday**: a public holiday. People use less electricity on these days.\n"
+            "- **UTC**: the standard world time. In winter it is the same as UK time. In summer UK time is one hour ahead."
+        )
