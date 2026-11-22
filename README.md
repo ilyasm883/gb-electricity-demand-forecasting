@@ -193,7 +193,7 @@ Future days (today and the next 6 days):
 Important:
 
 - The live days are **not** part of the tested results. All results in this project are for the test year 2019.
-- XGBoost was trained on 2015-2017 and is not trained again, so the error on the latest days is usually bigger than in 2019.
+- XGBoost was trained on 2015-2018 and is not trained again, so the error on the latest days is usually bigger than in 2019.
 - Only the last 42 days are downloaded and nothing is saved in the project. Without internet, only the 2019 option works.
 - The code is in `app/live_data.py`.
 

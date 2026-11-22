@@ -57,7 +57,7 @@ def show(data, model, features):
         st.warning(
             "**Live data: please read this.**\n\n"
             "- These days are **not** part of the tested results. All results in this project are for the test year 2019.\n"
-            "- XGBoost was trained on data from 2015 to 2017 and it is not trained again here. Electricity use has changed "
+            "- XGBoost was trained on data from 2015 to 2018 and it is not trained again here. Electricity use has changed "
             "since then, so the error on the latest days is usually bigger than in 2019 (about twice as big on average).\n"
             "- The demand comes from Elexon and the temperature from Open-Meteo (average of eight big UK cities). "
             "These are not the same sources as the 2015-2019 data.\n"
